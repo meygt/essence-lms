@@ -1,0 +1,135 @@
+spring:
+  application:
+    name: lms-backend
+  
+  datasource:
+    url: jdbc:h2:mem:lmsdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    username: sa
+    password: password
+    driver-class-name: org.h2.Driver
+  
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+  
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+        format_sql: true
+        use_sql_comments: true
+        jdbc:
+          batch_size: 20
+        order_inserts: true
+        order_updates: true
+  
+  flyway:
+    enabled: false
+  
+  security:
+    enabled: true
+  
+  mail:
+    host: ${MAIL_HOST:smtp.gmail.com}
+    port: ${MAIL_PORT:587}
+    username: ${MAIL_USERNAME:}
+    password: ${MAIL_PASSWORD:}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+  
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+server:
+  port: ${SERVER_PORT:8080}
+  servlet:
+    context-path: /api
+  error:
+    include-message: always
+    include-binding-errors: always
+
+# Application-specific configuration
+app:
+  jwt:
+    secret: ${JWT_SECRET:mySecretKey1234567890123456789012345678901234567890}
+    access-token-expiration: ${JWT_ACCESS_TOKEN_EXPIRATION:86400000} # 24 hours in milliseconds
+    refresh-token-expiration: ${JWT_REFRESH_TOKEN_EXPIRATION:2592000000} # 30 days in milliseconds
+  
+  cors:
+    allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:3000,http://localhost:3001}
+    allowed-methods: ${CORS_ALLOWED_METHODS:GET,POST,PUT,DELETE,PATCH,OPTIONS}
+    allowed-headers: ${CORS_ALLOWED_HEADERS:*}
+    allow-credentials: ${CORS_ALLOW_CREDENTIALS:true}
+  
+  file-storage:
+    upload-dir: ${FILE_UPLOAD_DIR:/var/www/uploads}
+    max-file-size: ${MAX_FILE_SIZE:10MB}
+    allowed-extensions: ${ALLOWED_EXTENSIONS:jpg,jpeg,png,gif,pdf,doc,docx,txt}
+  
+  security:
+    enable-csrf: ${SECURITY_ENABLE_CSRF:false}
+    enable-frame-options: ${SECURITY_ENABLE_FRAME_OPTIONS:false}
+  
+  aws:
+    access-key-id: ${AWS_ACCESS_KEY_ID:}
+    secret-access-key: ${AWS_SECRET_ACCESS_KEY:}
+    region: ${AWS_REGION:us-east-1}
+    s3:
+      bucket: ${AWS_S3_BUCKET:}
+  
+  square:
+    application-id: ${SQUARE_APPLICATION_ID:}
+    access-token: ${SQUARE_ACCESS_TOKEN:}
+    environment: ${SQUARE_ENVIRONMENT:sandbox}
+  
+  google:
+    calendar:
+      enabled: ${GOOGLE_CALENDAR_ENABLED:false}
+    
+  email:
+    enabled: ${EMAIL_ENABLED:false}
+    from: ${EMAIL_FROM:noreply@essenceqa.com}
+  
+  file-upload:
+    max-size: ${FILE_UPLOAD_MAX_SIZE:10MB}
+    allowed-types: ${FILE_UPLOAD_ALLOWED_TYPES:jpg,jpeg,png,pdf,doc,docx,txt}
+  
+  rate-limiting:
+    enabled: ${RATE_LIMITING_ENABLED:true}
+    auth-requests-per-minute: ${RATE_LIMIT_AUTH_REQUESTS:10}
+    api-requests-per-minute: ${RATE_LIMIT_API_REQUESTS:100}
+
+# Logging configuration
+logging:
+  level:
+    com.essenceqa.lms: ${LOG_LEVEL:INFO}
+    org.springframework.security: DEBUG
+    org.hibernate.SQL: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+  file:
+    name: logs/lms-backend.log
+
+# Management endpoints
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,env
+  endpoint:
+    health:
+      show-details: when-authorized
+  info:
+    env:
+      enabled: true
